@@ -19,6 +19,9 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * http://127.0.0.1:8080/user/detail?id=1&token=3ad5f6ab4c7b48a19b396cac93979e95
+     */
     @Authorization
     @RequestMapping("/detail")
     public ResponseResult getUserInfoById(@CurrentUser User currentUser, @RequestParam long id) {

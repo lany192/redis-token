@@ -25,6 +25,9 @@ public class TokenController {
     @Autowired
     private TokenManager tokenManager;
 
+    /**
+     * http://127.0.0.1:8080/tokens/login?username=admin&password=password
+     */
     @RequestMapping(value = "/login")
     public ResponseResult login(@RequestParam String username, @RequestParam String password) {
         Assert.notNull(username, "username can not be empty");
@@ -41,6 +44,9 @@ public class TokenController {
         return ResponseResult.ok(model);
     }
 
+    /**
+     * http://127.0.0.1:8080/tokens/logout?token=3ad5f6ab4c7b48a19b396cac93979e95
+     */
     @RequestMapping(value = "/logout")
     public ResponseResult logout(@RequestParam String token) {
         tokenManager.deleteToken(token);
