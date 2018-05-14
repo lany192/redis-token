@@ -1,5 +1,6 @@
 package com.lany.controller;
 
+import com.lany.authorization.annotation.ApiVersion;
 import com.lany.authorization.manager.TokenManager;
 import com.lany.authorization.model.TokenModel;
 import com.lany.config.ResultStatus;
@@ -16,18 +17,17 @@ import org.springframework.web.bind.annotation.RestController;
  * 获取和删除token的请求地址，在Restful设计中其实就对应着登录和退出登录的资源映射
  */
 @RestController
-@RequestMapping("/tokens")
+@RequestMapping("{version}/tokens")
 public class TokenController {
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private TokenManager tokenManager;
 
     /**
-     * http://127.0.0.1:8080/tokens/login?username=admin&password=password
+     * http://127.0.0.1:8080/v1/tokens/login?username=admin&password=password
      */
+    @ApiVersion(1)
     @RequestMapping(value = "/login")
     public ResponseResult login(@RequestParam String username, @RequestParam String password) {
         Assert.notNull(username, "username can not be empty");
@@ -45,12 +45,12 @@ public class TokenController {
     }
 
     /**
-     * http://127.0.0.1:8080/tokens/logout?token=3ad5f6ab4c7b48a19b396cac93979e95
+     * http://127.0.0.1:8080/v1/tokens/logout?token=3ad5f6ab4c7b48a19b396cac93979e95
      */
+    @ApiVersion(1)
     @RequestMapping(value = "/logout")
     public ResponseResult logout(@RequestParam String token) {
         tokenManager.deleteToken(token);
         return new ResponseResult(ResultStatus.SUCCESS, "退出登录成功");
     }
-
 }

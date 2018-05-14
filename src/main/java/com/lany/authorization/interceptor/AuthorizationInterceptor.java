@@ -6,6 +6,7 @@ import com.lany.authorization.model.TokenModel;
 import com.lany.config.Constants;
 import com.lany.config.ResultStatus;
 import com.lany.model.ResponseResult;
+import com.lany.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,16 +41,18 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
             //从header中得到token
             String token = request.getParameter("token");
             log.info("接收到的token:" + token);
-            //验证token
-            TokenModel model = manager.getTokenInfoByToken(token);
-            if (model != null) {
-                log.info("token验证通过");
-                //如果token验证成功，将token对应的用户id存在request中，便于之后注入
-                request.setAttribute(Constants.CURRENT_USER_ID, model.getUserId());
-                return true;
+            if (!StringUtils.isEmpty(token)) {
+                //验证token
+                TokenModel model = manager.getTokenInfoByToken(token);
+                if (model != null) {
+                    log.info("token验证通过");
+                    //如果token验证成功，将token对应的用户id存在request中，便于之后注入
+                    request.setAttribute(Constants.CURRENT_USER_ID, model.getUserId());
+                    return true;
+                }
             }
             log.info("token验证失败");
-            response.setContentType("text/html;charset=utf-8");
+            response.setContentType("application/json;charset=utf-8");
             ResponseResult result = new ResponseResult(ResultStatus.SC_UNAUTHORIZED, "token过期，请重新登录！");
             PrintWriter printWriter = response.getWriter();
             printWriter.write(result.toString());
